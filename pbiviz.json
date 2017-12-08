@@ -2,17 +2,17 @@
   "visual": {
     "name": "ImageGrid",
     "displayName": "Image Grid",
-    "guid": "PBI_CV_FC5183B9_926C_45E0_B5F7_0CE9EAF1DA9B",
+    "guid": "ImageGrid_FC5183B9_926C_45E0_B5F7_0CE9EAF1DA9B",
     "visualClassName": "Visual",
     "version": "1.0.0",
-    "description": "",
-    "supportUrl": "",
-    "gitHubUrl": ""
+    "description": "Visualize images in Power BI. Images can be visualized as top lists, weighted based on a measure or in a grid format.",
+    "supportUrl": "http://www.fredrikhedenstrom.com",
+    "gitHubUrl": "https://github.com/fredrikheden/imagegrid"
   },
   "apiVersion": "1.7.0",
   "author": {
-    "name": "",
-    "email": ""
+    "name": "Fredrik Hedenström",
+    "email": "fredrik.hedenstrom@outlook.com"
   },
   "assets": {
     "icon": "assets/icon.png"
