@@ -86,7 +86,7 @@ module powerbi.extensibility.visual {
             return viewModel;
         }
 
-        var selectionIDs = thisRef.getSelectionIds(dataViews[0], host);
+        var selectionIDs = thisRef.getSelectionIds(dataViews[0], host);      
 
         let visualDataPoints: VisualDataPoint[] = [];
         for( var i = 0; i < dataViews[0].table.rows.length; i++) {
@@ -99,6 +99,7 @@ module powerbi.extensibility.visual {
                 imageURL: lqImage,
                 imageURLHQ: hqImage,
                 selectionId: selectionIDs[i]
+                //selectionId: host.createSelectionIdBuilder().withCategory(dataViews[0].categorical.categories[0], i).createSelectionId()
             });
         }
         
@@ -376,6 +377,7 @@ module powerbi.extensibility.visual {
         }
        
         public update(options: VisualUpdateOptions) {
+
             let viewModel: VisualViewModel = visualTransform(options, this.host, this);
             let settings = this.visualCurrentSettings = viewModel.settings;
             this.visualDataPoints = viewModel.dataPoints;
@@ -406,6 +408,9 @@ module powerbi.extensibility.visual {
         }
 
         public getSelectionIds(dataView: DataView, host: IVisualHost): ISelectionId[] {
+            if ( typeof(dataView.table.identity) === "undefined" ) {
+                return null;
+            }
             return dataView.table.identity.map((identity: DataViewScopeIdentity) => {
                 const categoryColumn: DataViewCategoryColumn = {
                     source: dataView.table.columns[0],
