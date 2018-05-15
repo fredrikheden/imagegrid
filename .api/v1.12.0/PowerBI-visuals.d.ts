@@ -81,6 +81,12 @@ declare namespace powerbi {
         /** Should be used by visuals to trace errors in PBI telemetry. */
         Error = 3,
     }
+    const enum FilterAction {
+        /** Merging filter into existing filters. */
+        merge = 0,
+        /** removing existing filter. */
+        remove = 1,
+    }
 }
 ﻿
 
@@ -1261,6 +1267,7 @@ declare module powerbi.extensibility {
         clear(): IPromise<{}>;
         getSelectionIds(): ISelectionId[];
         applySelectionFilter(): void;
+        registerOnSelectCallback(callback: (ids: ISelectionId[]) => void): void;
     }
 }
 
@@ -1330,12 +1337,25 @@ declare module powerbi.extensibility {
     export function VisualPlugin (options: IVisualPluginOptions): ClassDecorator;
 }
 
+declare module powerbi.extensibility {
+    export interface ILocalizationManager {
+        getDisplayName(key: string): string; 
+    }
+}
+
+declare module powerbi.extensibility {
+    export interface IAuthenticationService {
+        getAADToken(visualId?: string): IPromise<string>;
+    }
+}
+
 declare module powerbi {
     export interface IFilter { }
 }
 
 /**
- * Change Log Version 1.7.0
+ * Change Log Version 1.12.0
+ * Added `selectionManager.registerOnSelectCallback()` method for Report Bookmarks support
  */
 
 declare module powerbi.extensibility.visual {
@@ -1359,11 +1379,17 @@ declare module powerbi.extensibility.visual {
         createSelectionManager: () => ISelectionManager;
         colorPalette: IColorPalette;
         persistProperties: (changes: VisualObjectInstancesToPersist) => void;
-        applyJsonFilter: (filter: IFilter, objectName: string, propertyName: string) => void;
+        applyJsonFilter: (filter: IFilter, objectName: string, propertyName: string, action: FilterAction) => void;
         tooltipService: ITooltipService;
         telemetry: ITelemetryService;
+        authenticationService: IAuthenticationService;
         locale: string;
         allowInteractions: boolean;
+        launchUrl: (url: string) => void;
+        fetchMoreData: () => boolean;
+        instanceId: string;
+        refreshHostData: () => void;
+        createLocalizationManager: () => ILocalizationManager;
     }
 
     export interface VisualUpdateOptions extends extensibility.VisualUpdateOptions {
@@ -1372,6 +1398,7 @@ declare module powerbi.extensibility.visual {
         type: VisualUpdateType;
         viewMode?: ViewMode;
         editMode?: EditMode;
+        operationKind?: VisualDataChangeOperationKind;
     }
 
     export interface VisualConstructorOptions extends extensibility.VisualConstructorOptions {
